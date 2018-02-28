@@ -37,8 +37,16 @@ function getBooks(){
   fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr')
   .then((response) => response.json())
   .then((data) => {
+    console.log(data.data);
     let output = '<h2>Books</h2>';
-    for(let x of data.data) {
+    let books = [];
+
+    for(i = 0; i < data.data.length; i++) {
+      books[i] = data.data[i];
+    }
+
+    console.log(books);
+    for(let x of books) {
       output += `
           <input type="text" name="title" value="${x.title}">
           <input type="text" name="title" value="${x.author}"> <br>
