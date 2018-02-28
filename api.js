@@ -1,4 +1,4 @@
-var content, txt = "";
+ /* var content, txt = "";
 
 let request = new XMLHttpRequest();
 request.open('GET', 'https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr');
@@ -18,3 +18,32 @@ request.onreadystatechange = function(event) {
     }
   };
 request.send();
+
+data.forEach(function(book){
+  output += `
+    <ul>
+      <li>Title: </li>
+      <li>Author:  </li>
+    </ul>
+  `;
+*/
+
+var request = ('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr');
+var content = document.getElementById('content');
+var getBooksBtn = document.getElementById('getBooksBtn');
+getBooksBtn.addEventListener('click', getBooks)
+
+function getBooks(){
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr')
+  .then((response) => response.json())
+  .then((data) => {
+    let output = '<h2>Books</h2>';
+    for(let x of data.data) {
+      output += `
+          <input type="text" name="title" value="${x.title}">
+          <input type="text" name="title" value="${x.author}"> <br>
+      `;
+    }
+  document.getElementById('content').innerHTML = output;
+  })
+}
