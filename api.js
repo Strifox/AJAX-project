@@ -10,8 +10,7 @@ request.onreadystatechange = function(event) {
       txt += "<table border='1'>";
         for (let x in content) {
           let y = content[x];
-            txt += "<tr><td>" + y[0].title + "</td>";
-            txt += "<td>" + y[0].author + "</td></tr>";
+            txt += "<tr><td>"+ y[0].title +"</td>"+"<td>"+ y[0].author +"</td>";
         }
       txt += "</table>";
       document.getElementById('content').innerHTML = txt;
@@ -37,13 +36,7 @@ function getBooks(){
   fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr')
   .then((response) => response.json())
   .then((data) => {
-
     if(data.status != 'success'){
-      console.log('Operation failed, click again on "Get Books"')
-      return;
-    }
-
-    console.log(data.data);
     let output = '<h2>Books</h2>';
     let books = [];
 
@@ -58,6 +51,6 @@ function getBooks(){
           <input type="text" name="title" value="${x.author}"> <br>
       `;
     }
-  document.getElementById('content').innerHTML = output;
+    document.getElementById('content').innerHTML = output;
   })
 }
