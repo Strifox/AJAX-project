@@ -53,8 +53,8 @@ function getBooks(){
 
     for(let x of books) {
       output += `
-          <input type="text" id="t${x.id}" value="${x.title}">
-          <input type="text" id="a${x.id}" value="${x.author}">
+          <input type="text" id="title${x.id}" value="${x.title}">
+          <input type="text" id="author${x.id}" value="${x.author}">
           <button onclick="deleteBook(${x.id})">Delete</button>
           <button onclick="updateBook(${x.id})">Update</button>
           <br>
@@ -87,8 +87,8 @@ function deleteBook(id) {
 }
 
 function updateBook(id) {
-  let title = document.getElementById('t'+id).value;
-  let author = document.getElementById('a'+id).value;
+  let title = document.getElementById('title'+id).value;
+  let author = document.getElementById('author'+id).value;
 
   console.log(title);
   console.log(author);
