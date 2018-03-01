@@ -1,49 +1,33 @@
- /* var content, txt = "";
 
-let request = new XMLHttpRequest();
-request.open('GET', 'https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr');
-request.onreadystatechange = function(event) {
-  if(request.status == 200 && request.readyState == 4) {
-    console.log("Respons: " + request.responseText);
-    content = JSON.parse(request.responseText);
-    console.log("Här kommer content: ", content);
-      txt += "<table border='1'>";
-        for (let x in content) {
-          let y = content[x];
-            txt += "<tr><td>" + y[0].title + "</td>";
-            txt += "<td>" + y[0].author + "</td></tr>";
-        }
-      txt += "</table>";
-      document.getElementById('content').innerHTML = txt;
-    }
-  };
-request.send();
+let apiStorage = window.localStorage;
+let apiKey = apiStorage.getItem('id');
 
-data.forEach(function(book){
-  output += `
-    <ul>
-      <li>Title: </li>
-      <li>Author:  </li>
-    </ul>
-  `;
-*/
+addEventListener('load', getBooks);
 
-var request = ('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr');
-var content = document.getElementById('content');
-var getBooksBtn = document.getElementById('getBooksBtn');
-getBooksBtn.addEventListener('click', getBooks)
+let content = document.getElementById('content');
+let getBooksBtn = document.getElementById('getBooksBtn').addEventListener('click', getBooks);
+let addBtn = document.getElementById('addBtn').addEventListener('click', addBook);
+let requestAPIKeyBtn = document.getElementById('getAPIKeyBtn').addEventListener('click', getApiKey);
 
-function getBooks(){
-  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr')
+function getApiKey() {
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?requestKey')
   .then((response) => response.json())
   .then((data) => {
+    apiStorage.setItem('id', data.key);
+    apiKey = data.key;
+    console.log(data.key);
+  })
+}
 
+function getBooks(){
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key='+apiKey)
+  .then((response) => response.json())
+  .then((data) => {
     if(data.status != 'success'){
       console.log('Operation failed, click again on "Get Books"')
       return;
     }
 
-    console.log(data.data);
     let output = '<h2>Books</h2>';
     let books = [];
 
@@ -51,13 +35,63 @@ function getBooks(){
       books[i] = data.data[i];
     }
 
-    console.log(books);
     for(let x of books) {
       output += `
-          <input type="text" name="title" value="${x.title}">
-          <input type="text" name="title" value="${x.author}"> <br>
+          <input type="text" id="title${x.id}" value="${x.title}">
+          <input type="text" id="author${x.id}" value="${x.author}">
+          <button onclick="deleteBook(${x.id})">Delete</button>
+          <button onclick="updateBook(${x.id})">Update</button>
+          <br>
       `;
     }
   document.getElementById('content').innerHTML = output;
+  })
+}
+
+function addBook() {
+  let title = document.getElementById('title').value;
+  let author = document.getElementById('author').value;
+
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=insert&key='+apiKey+'&title='+title+'&author='+author+'')
+  .then((response) => response.json())
+  .then((data) => {
+    if(data.status !== 'success') {
+      console.log('Operation failed, click again on "Add"')
+    }
+    else {
+      console.log('Successfully added book')
+    }
+  })
+}
+
+function deleteBook(id) {
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=delete&key='+apiKey+'&id='+id+'')
+  .then((response) => response.json())
+  .then((data) => {
+    if(data.status !== 'success') {
+      console.log('Operation failed, click again on "Delete"')
+    }
+    else {
+      console.log('Successfully deleted book')
+    }
+  })
+}
+
+function updateBook(id) {
+  let title = document.getElementById('title'+id).value;
+  let author = document.getElementById('author'+id).value;
+
+  console.log(title);
+  console.log(author);
+
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=update&key='+apiKey+'&id='+id+'&title='+title+'&author='+author)
+  .then((response) => response.json())
+  .then((data) => {
+    if(data.status !== 'success') {
+      console.log('Operation failed, click again on "Update"')
+    }
+    else {
+      console.log('Successfully updated book')
+    }
   })
 }
