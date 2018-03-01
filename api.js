@@ -37,6 +37,12 @@ function getBooks(){
   fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=select&key=tFVZr')
   .then((response) => response.json())
   .then((data) => {
+
+    if(data.status != 'success'){
+      console.log('Operation failed, click again on "Get Books"')
+      return;
+    }
+
     console.log(data.data);
     let output = '<h2>Books</h2>';
     let books = [];
