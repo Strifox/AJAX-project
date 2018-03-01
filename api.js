@@ -27,6 +27,9 @@ function getBooks(){
       console.log('Operation failed, click again on "Get Books"')
       return;
     }
+    else {
+      console.log('Operation succeeded')
+    }
 
     let output = '<h2>Books</h2>';
     let books = [];
@@ -48,20 +51,29 @@ function getBooks(){
   })
 }
 
+
 function addBook() {
   let title = document.getElementById('title').value;
   let author = document.getElementById('author').value;
+  let counter = 0;
+  let successful = false;
 
-  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=insert&key='+apiKey+'&title='+title+'&author='+author+'')
-  .then((response) => response.json())
-  .then((data) => {
-    if(data.status !== 'success') {
-      console.log('Operation failed, click again on "Add"')
-    }
-    else {
-      console.log('Successfully added book')
-    }
-  })
+  while ( counter < 10 && !successful)
+  {
+    fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=insert&key='+apiKey+'&title='+title+'&author='+author+'')
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.status !== 'success') {
+        console.log('Operation failed, click again on "Add"')
+      }
+      else {
+        console.log('Successfully added book after' + counter + 'tries')
+        successful = true;
+      }
+    })
+    console.log(counter);
+    counter++;
+  }
 }
 
 function deleteBook(id) {
