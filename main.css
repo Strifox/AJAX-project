@@ -1,0 +1,19 @@
+body {
+  font-family: sans-serif;
+}
+section {
+  width: 960px;
+  margin: auto;
+}
+p {
+  margin: 5px;
+}
+
+#addForm {
+  display: none;
+}
+
+#errorMessage {
+  color: red;
+  font-size: 14px;
+}
