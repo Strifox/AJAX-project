@@ -56,7 +56,7 @@ function getBooks(){
       getBooksCounter = 0;
     }
 
-    let output = '<h2>Books</h2>';
+    let output = '';
     let books = [];
 
     for(i = 0; i < data.data.length; i++) {
