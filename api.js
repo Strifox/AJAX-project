@@ -51,47 +51,53 @@ function getBooks(){
   })
 }
 
-
+let addBookCounter = 0;
 function addBook() {
   let title = document.getElementById('title').value;
   let author = document.getElementById('author').value;
-  let counter = 0;
-  let successful = false;
-
-  while ( counter < 10 && !successful)
-  {
-    fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=insert&key='+apiKey+'&title='+title+'&author='+author+'')
-    .then((response) => response.json())
-    .then((data) => {
-      if(data.status !== 'success') {
-        console.log('Operation failed, click again on "Add"')
-      }
-      else {
-        console.log('Successfully added book after' + counter + 'tries')
-        successful = true;
-      }
-    })
-    console.log(counter);
-    counter++;
-  }
-}
-
-function deleteBook(id) {
-  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=delete&key='+apiKey+'&id='+id+'')
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=insert&key='+apiKey+'&title='+title+'&author='+author+'')
   .then((response) => response.json())
   .then((data) => {
-    if(data.status !== 'success') {
-      console.log('Operation failed, click again on "Delete"')
+    if(data.status !== 'success'){
+      if(addBookCounter < 10){
+        console.log('Operation failed, retrying')
+        addBookCounter++;
+        addBook();
+      }
     }
     else {
-      console.log('Successfully deleted book')
+      console.log('Successfully added book after ' + addBookCounter + ' fails')
+      addBookCounter = 0;
+      return;
     }
   })
 }
 
+let deleteBookCounter = 0;
+function deleteBook(id) {
+  fetch('https://www.forverkliga.se/JavaScript/api/crud.php?op=delete&key='+apiKey+'&id='+id+'')
+  .then((response) => response.json())
+  .then((data) => {
+    if(data.status !== 'success'){
+      if(deleteBookCounter < 10){
+        console.log('Operation failed, retrying')
+        deleteBookCounter++;
+        deleteBook(id);
+      }
+    }
+    else {
+      console.log('Successfully deleted book after ' + deleteBookCounter+ ' fails')
+      deleteBookCounter = 0;
+      return;
+    }
+  })
+}
+
+let updateBookCounter = 0;
 function updateBook(id) {
   let title = document.getElementById('title'+id).value;
   let author = document.getElementById('author'+id).value;
+  let successful = false;
 
   console.log(title);
   console.log(author);
@@ -100,10 +106,15 @@ function updateBook(id) {
   .then((response) => response.json())
   .then((data) => {
     if(data.status !== 'success') {
-      console.log('Operation failed, click again on "Update"')
+      if(updateBookCounter < 10) {
+        console.log('Operation failed, click again on "Update"')
+        updateBookCounter++;
+        updateBook(id);
+      }
     }
     else {
-      console.log('Successfully updated book')
+      console.log('Successfully updated book after ' + updateBookCounter + ' tries')
+      return;
     }
   })
 }
